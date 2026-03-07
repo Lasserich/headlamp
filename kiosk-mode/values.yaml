@@ -1,0 +1,28 @@
+config:
+  pluginsDir: "/headlamp/plugins"
+  # Mount kiosk into the user-plugins dir so the pluginsManager
+  # only manages /headlamp/plugins (flux) and never tries to delete kiosk.
+  extraArgs:
+    - "-user-plugins-dir=/headlamp/user-plugins"
+    - "-watch-plugins-changes=true"
+
+pluginsManager:
+  enabled: true
+  baseImage: node:lts-alpine
+  configContent: |
+    plugins:
+      - name: flux
+        source: https://artifacthub.io/packages/headlamp/headlamp-plugins/headlamp_flux
+
+volumes:
+  - name: kiosk-plugin
+    configMap:
+      name: headlamp-kiosk-plugin
+
+volumeMounts:
+  - name: kiosk-plugin
+    mountPath: /headlamp/user-plugins/headlamp-kiosk-plugin/main.js
+    subPath: main.js
+  - name: kiosk-plugin
+    mountPath: /headlamp/user-plugins/headlamp-kiosk-plugin/package.json
+    subPath: package.json
